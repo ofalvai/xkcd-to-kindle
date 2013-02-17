@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:title>XKCD for Kindle</dc:title>
+        <dc:language>en</dc:language>
+        <meta name="cover" content="BookCover" />
+        <dc:identifier id="BookId" opf:scheme="uuid">urn:uuid:8a785a10-4c3f-11e2-bcfd-0800200c9a66</dc:identifier>
+        <dc:creator>Munroe, Randall</dc:creator>
+        <dc:description>Comics downloaded from xkcd.com, and formatted as ebook</dc:description>
+    </metadata>
+    <manifest>
+        <item id="tc" media-type= "application/xhtml+xml" href="src/toc.html"></item>
+        <item id="xkcd" media-type= "application/xhtml+xml" href="src/xkcd.html"></item>
+        <item id="ncx" media-type= "application/x-dtbncx+xml" href="src/toc.ncx"></item>
+        <item id="BookCover" media-type= "image/jpg" href="src/cover.jpg"></item>
+    </manifest>
+    <spine toc="ncx">
+        <itemref idref="tc" />
+        <itemref idref="xkcd" />
+    </spine>
+    <guide>
+        <reference type="toc" title="Table of Contents" href="src/toc.html"></reference>
+    </guide>
+</package>
