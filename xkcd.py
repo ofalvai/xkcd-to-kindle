@@ -38,42 +38,44 @@ for i in range(first, last + 1):
         #Preventing an infinite loop (ie. the user gave a number bigger than the last comic)
         print('Download failed 10 times, moving on...')
         break
-    try:
-        page = urllib.request.urlopen('http://xkcd.com/' + str(i))
-        soup = BeautifulSoup(page.read().decode('utf-8'))
-        el_comic = soup.find('div', id='comic')
-        has_link = False
-        if el_comic.find('a') and not i == 1005:
-            #The comic is wrapped in a link:
-            el_img = el_comic.a.img
-            link = el_comic.a['href']
-            has_link = True
-        else:
-            el_img = el_comic.img
-        if i == 472:
-            title = '472: House of pancakes'
-        else:
-            title = str(i) + ': ' + soup.find('div', id='ctitle').string
-        print(title)
-        img_file = urllib.request.urlopen(el_img['src']).read()
-        file_img = open('src/img/' + str(i) + '.png', 'wb')
-        file_img.write(img_file)
-        file_img.close()
-        text = html.escape(el_img['title'], True)
-        if has_link:
-            file_xkcd.write(('<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p>'
-                + '<p>{2}</p><p>Link: <a href="{3}">{3}</a></p><mbp:pagebreak />')
-                .format(i, title, text, link))
-        else:
-            file_xkcd.write('<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p><p>{2}</p><mbp:pagebreak />'
-                .format(i, title, text))
-        toc_chunk += '<p><a href="xkcd.html#{0}">{1}</a></p>'.format(i, title)
-        ncx_chunk += ('<navPoint id="navpoint-{0}" playOrder="{0}"><navLabel><text>{1}</text>'
-            + '</navLabel><content src="xkcd.html#{0}"/></navPoint>').format(i, title)
-    except:
-        print('Failed to download #{0}, skipping...'.format(i))
-        failed += 1
-        continue
+    # try:
+    page = urllib.request.urlopen('http://xkcd.com/' + str(i))
+    soup = BeautifulSoup(page.read().decode('utf-8'), 'html.parser')
+    el_comic = soup.find('div', id='comic')
+    has_link = False
+    if el_comic.find('a') and not i == 1005:
+        #The comic is wrapped in a link:
+        el_img = el_comic.a.img
+        link = el_comic.a['href']
+        has_link = True
+    else:
+        el_img = el_comic.img
+    if i == 472:
+        title = '472: House of pancakes'
+    else:
+        title = str(i) + ': ' + soup.find('div', id='ctitle').string
+    print(title)
+    
+    # urllib can't handle the "//example.com" URL format: 
+    img_file = urllib.request.urlopen('http:' + el_img['src']).read()
+    file_img = open('src/img/' + str(i) + '.png', 'wb')
+    file_img.write(img_file)
+    file_img.close()
+    text = html.escape(el_img['title'], True)
+    if has_link:
+        file_xkcd.write(('<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p>'
+            + '<p>{2}</p><p>Link: <a href="{3}">{3}</a></p><mbp:pagebreak />')
+            .format(i, title, text, link))
+    else:
+        file_xkcd.write('<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p><p>{2}</p><mbp:pagebreak />'
+            .format(i, title, text))
+    toc_chunk += '<p><a href="xkcd.html#{0}">{1}</a></p>'.format(i, title)
+    ncx_chunk += ('<navPoint id="navpoint-{0}" playOrder="{0}"><navLabel><text>{1}</text>'
+        + '</navLabel><content src="xkcd.html#{0}"/></navPoint>').format(i, title)
+    # except Ex:
+        # print('Failed to download #{0}, skipping...'.format(i))
+        # failed += 1
+        # continue
 
 file_xkcd.write('<mbp:pagebreak /></body></html>')
 file_xkcd.close()
