@@ -9,16 +9,16 @@
         <dc:description>Comics downloaded from xkcd.com, and formatted as ebook</dc:description>
     </metadata>
     <manifest>
-        <item id="tc" media-type= "application/xhtml+xml" href="src/toc.html"></item>
-        <item id="xkcd" media-type= "application/xhtml+xml" href="src/xkcd.html"></item>
-        <item id="ncx" media-type= "application/x-dtbncx+xml" href="src/toc.ncx"></item>
-        <item id="BookCover" media-type= "image/jpg" href="src/cover.jpg"></item>
+        <item id="tc" media-type= "application/xhtml+xml" href="toc.html"></item>
+        <item id="xkcd" media-type= "application/xhtml+xml" href="xkcd.html"></item>
+        <item id="ncx" media-type= "application/x-dtbncx+xml" href="toc.ncx"></item>
+        <item id="BookCover" media-type= "image/jpg" href="../assets/cover.jpg"></item>
     </manifest>
     <spine toc="ncx">
         <itemref idref="tc" />
         <itemref idref="xkcd" />
     </spine>
     <guide>
-        <reference type="toc" title="Table of Contents" href="src/toc.html"></reference>
+        <reference type="toc" title="Table of Contents" href="toc.html"></reference>
     </guide>
 </package>
