@@ -36,7 +36,7 @@ file_ncx = open('out/toc.ncx', 'a', encoding='utf-8')
 ncx_chunk = ''
 
 # List of IDs of comics that would break the script... #404 is an obvious one :)
-blacklist = [404]
+blacklist = [404, 1350, 1416, 1525, 1608]
 failed = 0
 
 for i in range(first, last + 1):
