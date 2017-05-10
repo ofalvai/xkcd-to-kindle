@@ -96,7 +96,10 @@ file_ncx.close()
 
 print('\nCreating .mobi file...')
 with open('out/kindlegen_log.txt', 'w') as file_log:
-    subprocess.call(['bin/kindlegen.exe', 'out/metadata.opf', '-o', 'xkcd.mobi'], stdout=file_log)
+    if sys.platform == 'darwin':
+        os.system("bin/kindlegen out/metadata.opf -o xkcd.mobi")
+    elif "win" in sys.platform:
+        subprocess.call(['bin/kindlegen.exe', 'out/metadata.opf', '-o', 'xkcd.mobi'], stdout=file_log)
 print('Ready...results are placed in "out" folder (images, xkcd.mobi, xkcd.html, kindlegen_log.txt)')
 
 if os.path.exists('out/toc.html'):
