@@ -26,7 +26,9 @@ copy('assets/toc_empty.ncx', 'out/toc.ncx')
 copy('assets/metadata.opf', 'out/metadata.opf')
 
 file_xkcd = open('out/xkcd.html', 'a', encoding='utf-8')
-file_xkcd.write('<html><head><title>XKCD: {0} - {1}</title></head><body>'.format(first, last))
+file_xkcd.write(
+    '<html><head><title>XKCD: {0} - {1}</title></head><body>'.format(
+        first, last))
 
 file_toc = open('out/toc.html', 'a', encoding='utf-8')
 file_toc.write('<html><body><a name="toc"></a><h3>TABLE OF CONTENTS</h3>')
@@ -64,22 +66,27 @@ for i in range(first, last + 1):
             title = str(i) + ': ' + soup.find('div', id='ctitle').string
         print(title)
 
-        # urllib can't handle the "//example.com" URL format: 
+        # urllib can't handle the "//example.com" URL format:
         img_file = urllib.request.urlopen('http:' + el_img['src']).read()
         file_img = open('out/img/' + str(i) + '.png', 'wb')
         file_img.write(img_file)
         file_img.close()
         text = html.escape(el_img['title'], True)
         if has_link:
-            file_xkcd.write(('<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p>'
-                + '<p>{2}</p><p>Link: <a href="{3}">{3}</a></p><mbp:pagebreak />')
-                .format(i, title, text, link))
+            file_xkcd.write((
+                '<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p>'
+                +
+                '<p>{2}</p><p>Link: <a href="{3}">{3}</a></p><mbp:pagebreak />'
+            ).format(i, title, text, link))
         else:
-            file_xkcd.write('<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p><p>{2}</p><mbp:pagebreak />'
+            file_xkcd.write(
+                '<a id="{0}"></a><h3>{1}</h3><p><img src="img/{0}.png" /></p><p>{2}</p><mbp:pagebreak />'
                 .format(i, title, text))
         toc_chunk += '<p><a href="xkcd.html#{0}">{1}</a></p>'.format(i, title)
-        ncx_chunk += ('<navPoint id="navpoint-{0}" playOrder="{0}"><navLabel><text>{1}</text>'
-            + '</navLabel><content src="xkcd.html#{0}"/></navPoint>').format(i, title)
+        ncx_chunk += (
+            '<navPoint id="navpoint-{0}" playOrder="{0}"><navLabel><text>{1}</text>'
+            + '</navLabel><content src="xkcd.html#{0}"/></navPoint>').format(
+                i, title)
     except:
         print('Failed to download #{0}, skipping...'.format(i))
         failed += 1
@@ -97,10 +104,30 @@ file_ncx.close()
 print('\nCreating .mobi file...')
 with open('out/kindlegen_log.txt', 'w') as file_log:
     if sys.platform == 'darwin':
-        subprocess.call(['bin/kindlegen', 'out/metadata.opf', '-o', 'xkcd.mobi'], stdout=file_log)
+        subprocess.call(
+            [
+                'bin/kindlegen.darwin', 'dont_append_source',
+                'out/metadata.opf', '-o', 'xkcd.mobi'
+            ],
+            stdout=file_log)
     elif "win" in sys.platform:
-        subprocess.call(['bin/kindlegen.exe', 'out/metadata.opf', '-o', 'xkcd.mobi'], stdout=file_log)
-print('Ready...results are placed in "out" folder (images, xkcd.mobi, xkcd.html, kindlegen_log.txt)')
+        subprocess.call(
+            [
+                'bin/kindlegen.exe', 'dont_append_source', 'out/metadata.opf',
+                '-o', 'xkcd.mobi'
+            ],
+            stdout=file_log)
+    elif "linux" in sys.platform:
+        subprocess.call(
+            [
+                'bin/kindlegen', 'dont_append_source', 'out/metadata.opf',
+                '-o', 'xkcd.mobi'
+            ],
+            stdout=file_log)
+
+print(
+    'Ready...results are placed in "out" folder (images, xkcd.mobi, xkcd.html, kindlegen_log.txt)'
+)
 
 if os.path.exists('out/toc.html'):
     os.remove('out/toc.html')
